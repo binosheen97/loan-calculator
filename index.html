@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Loan Calculator - EMI Calculator, Monthly Payment & Interest</title>
+    <meta name="description" content="Free loan & EMI calculator. Calculate monthly EMI payments, total interest, and full amortization schedule for home loans, car loans, personal loans. Fast and accurate.">
+    <meta name="keywords" content="loan calculator, EMI calculator, monthly payment calculator, home loan calculator, car loan calculator, mortgage calculator, interest calculator, amortization">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://binosheen97.github.io/loan-calculator/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Loan Calculator - Free EMI & Monthly Payment Calculator">
+    <meta property="og:description" content="Calculate your monthly EMI, total interest, and amortization schedule for any loan. Free and instant.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://binosheen97.github.io/loan-calculator/">
+
+    <!-- Google Verification -->
+    <meta name="google-site-verification" content="cBtI9qnEEtgjEyN--AIkGKP__lNGdHbMJEZI72XqDSo" />
+    <meta name="google-adsense-account" content="ca-pub-9209701505864374">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QV903LBHRQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QV903LBHRQ');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9209701505864374" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Loan Calculator</h1>
+            <p class="subtitle">Calculate EMI, Total Interest & Amortization Instantly</p>
+        </header>
+
+        <div class="calculator-container">
+
+            <!-- Left Column: Input -->
+            <div class="left-column">
+
+                <!-- Loan Type Tabs -->
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="setPreset('home')">🏠 Home Loan</button>
+                    <button class="tab-btn" onclick="setPreset('car')">🚗 Car Loan</button>
+                    <button class="tab-btn" onclick="setPreset('personal')">👤 Personal</button>
+                    <button class="tab-btn" onclick="setPreset('custom')">⚙️ Custom</button>
+                </div>
+
+                <div class="calc-card">
+                    <h2>Loan Details</h2>
+
+                    <!-- Loan Amount -->
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Loan Amount</label>
+                            <span class="value-badge" id="amount-display">$100,000</span>
+                        </div>
+                        <input type="range" id="amount-slider" min="1000" max="2000000" value="100000" step="1000" class="slider" oninput="updateAmount()">
+                        <div class="slider-labels"><span>$1K</span><span>$2M</span></div>
+                        <div class="input-wrapper" style="margin-top:10px">
+                            <span class="prefix">$</span>
+                            <input type="number" id="amount-input" value="100000" min="1000" max="10000000" oninput="syncFromInput('amount')">
+                        </div>
+                    </div>
+
+                    <!-- Interest Rate -->
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Annual Interest Rate</label>
+                            <span class="value-badge" id="rate-display">7.0%</span>
+                        </div>
+                        <input type="range" id="rate-slider" min="1" max="30" value="7" step="0.1" class="slider" oninput="updateRate()">
+                        <div class="slider-labels"><span>1%</span><span>30%</span></div>
+                        <div class="input-wrapper" style="margin-top:10px">
+                            <input type="number" id="rate-input" value="7" min="0.1" max="50" step="0.1" oninput="syncFromInput('rate')">
+                            <span class="suffix">%</span>
+                        </div>
+                    </div>
+
+                    <!-- Loan Tenure -->
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label>Loan Tenure</label>
+                            <span class="value-badge" id="tenure-display">20 Years</span>
+                        </div>
+                        <input type="range" id="tenure-slider" min="1" max="30" value="20" step="1" class="slider" oninput="updateTenure()">
+                        <div class="slider-labels"><span>1 Yr</span><span>30 Yrs</span></div>
+                        <div class="tenure-toggle">
+                            <button class="tenure-btn active" id="btn-years" onclick="setTenureUnit('years')">Years</button>
+                            <button class="tenure-btn" id="btn-months" onclick="setTenureUnit('months')">Months</button>
+                        </div>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculate()">
+                        <span>Calculate EMI</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+
+                <!-- Ad Unit -->
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-9209701505864374"
+                         data-ad-slot="auto"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="right-column">
+                <div class="results-card" id="results-card">
+                    <div class="results-placeholder">
+                        <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        <p>Adjust loan details and click Calculate to see your EMI</p>
+                    </div>
+                </div>
+
+                <div class="tips-card">
+                    <h3>💡 Loan Tips</h3>
+                    <ul class="tips-list">
+                        <li>Higher down payment = lower EMI</li>
+                        <li>Shorter tenure = less total interest</li>
+                        <li>Good credit score = lower interest rate</li>
+                        <li>EMI should be ≤ 40% of your monthly income</li>
+                        <li>Prepaying early saves significant interest</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Amortization Table -->
+        <div class="amortization-section" id="amortization-section" style="display:none">
+            <div class="amortization-card">
+                <div class="amort-header-row">
+                    <h2>📊 Amortization Schedule</h2>
+                    <button class="toggle-table-btn" id="toggle-btn" onclick="toggleTable()">Show Full Schedule ▼</button>
+                </div>
+                <div class="table-wrapper" id="table-wrapper" style="display:none">
+                    <table class="amort-table" id="amort-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Month</th>
+                                <th>EMI</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amort-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="info-card">
+                <h2>What is EMI?</h2>
+                <p>EMI (Equated Monthly Installment) is the fixed amount you pay to the lender every month until the loan is fully repaid. It includes both principal repayment and interest.</p>
+                <p><strong>Formula:</strong> EMI = P × r × (1+r)ⁿ / ((1+r)ⁿ - 1)</p>
+                <p>Where P = Principal, r = Monthly Interest Rate, n = Number of Months</p>
+            </div>
+            <div class="info-card">
+                <h2>Types of Loans</h2>
+                <ul>
+                    <li><strong>Home Loan:</strong> 6-9% p.a., 10-30 years tenure</li>
+                    <li><strong>Car Loan:</strong> 7-12% p.a., 1-7 years tenure</li>
+                    <li><strong>Personal Loan:</strong> 10-24% p.a., 1-5 years</li>
+                    <li><strong>Education Loan:</strong> 8-15% p.a., up to 15 years</li>
+                    <li><strong>Business Loan:</strong> 10-20% p.a., 1-10 years</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h2>How to Reduce Your EMI</h2>
+                <ul>
+                    <li>Make a larger down payment to reduce principal</li>
+                    <li>Negotiate a lower interest rate with good credit</li>
+                    <li>Choose a longer repayment tenure</li>
+                    <li>Make partial prepayments when possible</li>
+                    <li>Transfer your loan to a lender with lower rates</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <strong>Calculators:</strong>
+                <a href="/age-calculator/">Age</a> |
+                <a href="/bmi-calculator/">BMI</a> |
+                <a href="/percentage-calculator/">Percentage</a> |
+                <a href="/date-calculator/">Date</a> |
+                <a href="/loan-calculator/">Loan/EMI</a>
+            </p>
+            <p>
+                <strong>Tools:</strong>
+                <a href="/unit-converter/">Unit Converter</a> |
+                <a href="/password-generator/">Password Generator</a>
+            </p>
+            <p>
+                <a href="/">Home</a> |
+                <a href="/about.html">About Us</a> |
+                <a href="/contact.html">Contact</a> |
+                <a href="/privacy-policy.html">Privacy Policy</a> |
+                <a href="/terms-of-service.html">Terms of Service</a>
+            </p>
+            <p>&copy; 2026 Free Online Tools. Free loan & EMI calculator.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
