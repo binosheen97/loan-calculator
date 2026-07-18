@@ -1,4 +1,38 @@
 let tenureUnit = 'years';
+let currentCurrency = { symbol: '$', code: 'USD', name: 'US Dollar', locale: 'en-US' };
+
+const currencies = [
+    { symbol: '$',   code: 'USD', name: 'US Dollar',          locale: 'en-US'  },
+    { symbol: '$',   code: 'CAD', name: 'Canadian Dollar',     locale: 'en-CA'  },
+    { symbol: '$',   code: 'AUD', name: 'Australian Dollar',   locale: 'en-AU'  },
+    { symbol: '£',   code: 'GBP', name: 'British Pound',       locale: 'en-GB'  },
+    { symbol: '€',   code: 'EUR', name: 'Euro',                locale: 'de-DE'  },
+    { symbol: '₹',   code: 'INR', name: 'Indian Rupee',        locale: 'en-IN'  },
+    { symbol: '¥',   code: 'JPY', name: 'Japanese Yen',        locale: 'ja-JP'  },
+    { symbol: '¥',   code: 'CNY', name: 'Chinese Yuan',        locale: 'zh-CN'  },
+    { symbol: '₩',   code: 'KRW', name: 'South Korean Won',    locale: 'ko-KR'  },
+    { symbol: 'د.إ', code: 'AED', name: 'UAE Dirham',          locale: 'ar-AE'  },
+    { symbol: '﷼',   code: 'SAR', name: 'Saudi Riyal',         locale: 'ar-SA'  },
+    { symbol: '₺',   code: 'TRY', name: 'Turkish Lira',        locale: 'tr-TR'  },
+    { symbol: 'R',   code: 'ZAR', name: 'South African Rand',  locale: 'en-ZA'  },
+    { symbol: '₦',   code: 'NGN', name: 'Nigerian Naira',      locale: 'en-NG'  },
+    { symbol: 'R$',  code: 'BRL', name: 'Brazilian Real',      locale: 'pt-BR'  },
+    { symbol: '$',   code: 'MXN', name: 'Mexican Peso',        locale: 'es-MX'  },
+    { symbol: '৳',   code: 'BDT', name: 'Bangladeshi Taka',    locale: 'bn-BD'  },
+    { symbol: '₨',   code: 'PKR', name: 'Pakistani Rupee',     locale: 'en-PK'  },
+    { symbol: '₨',   code: 'LKR', name: 'Sri Lankan Rupee',    locale: 'si-LK'  },
+    { symbol: 'RM',  code: 'MYR', name: 'Malaysian Ringgit',   locale: 'ms-MY'  },
+    { symbol: 'S$',  code: 'SGD', name: 'Singapore Dollar',    locale: 'en-SG'  },
+    { symbol: '฿',   code: 'THB', name: 'Thai Baht',           locale: 'th-TH'  },
+    { symbol: '₫',   code: 'VND', name: 'Vietnamese Dong',     locale: 'vi-VN'  },
+    { symbol: 'Rp',  code: 'IDR', name: 'Indonesian Rupiah',   locale: 'id-ID'  },
+    { symbol: '₱',   code: 'PHP', name: 'Philippine Peso',     locale: 'fil-PH' },
+    { symbol: 'CHF', code: 'CHF', name: 'Swiss Franc',         locale: 'de-CH'  },
+    { symbol: 'kr',  code: 'SEK', name: 'Swedish Krona',       locale: 'sv-SE'  },
+    { symbol: 'kr',  code: 'NOK', name: 'Norwegian Krone',     locale: 'nb-NO'  },
+    { symbol: 'kr',  code: 'DKK', name: 'Danish Krone',        locale: 'da-DK'  },
+    { symbol: 'zł',  code: 'PLN', name: 'Polish Zloty',        locale: 'pl-PL'  },
+];
 
 const presets = {
     home:     { amount: 300000, rate: 7.0,  tenure: 20 },
@@ -6,6 +40,33 @@ const presets = {
     personal: { amount: 10000,  rate: 14.0, tenure: 3  },
     custom:   { amount: 100000, rate: 7.0,  tenure: 10 }
 };
+
+function autoDetectCurrency() {
+    const locale = navigator.language || 'en-US';
+    const found = currencies.find(c => c.locale === locale);
+    if (found) {
+        currentCurrency = found;
+        document.getElementById('currency-select').value = found.code;
+    }
+}
+
+function setCurrency() {
+    const code = document.getElementById('currency-select').value;
+    currentCurrency = currencies.find(c => c.code === code) || currencies[0];
+    updateSliderLabels();
+    updateAmount();
+    calculate();
+}
+
+function updateSliderLabels() {
+    const sym = currentCurrency.symbol;
+    document.getElementById('slider-label-min').textContent = sym + '1K';
+    document.getElementById('slider-label-max').textContent = sym + '2M';
+    document.getElementById('amount-prefix').textContent = sym;
+    document.getElementById('amount-display').textContent = formatCurrency(
+        parseFloat(document.getElementById('amount-input').value) || 0
+    );
+}
 
 function setPreset(type) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -201,8 +262,18 @@ function toggleTable() {
 }
 
 function formatCurrency(n) {
-    return '$' + Math.round(n).toLocaleString('en-US');
+    const sym = currentCurrency.symbol;
+    const rounded = Math.round(n);
+    try {
+        return sym + rounded.toLocaleString(currentCurrency.locale);
+    } catch(e) {
+        return sym + rounded.toLocaleString('en-US');
+    }
 }
 
 // Initialize
-window.addEventListener('load', () => setPreset('home'));
+window.addEventListener('load', () => {
+    autoDetectCurrency();
+    updateSliderLabels();
+    setPreset('home');
+});
